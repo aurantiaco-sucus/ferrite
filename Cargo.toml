@@ -3,4 +3,8 @@ name = "ferrite"
 version = "0.1.0"
 edition = "2024"
 
+[features]
+fastrand = ["dep:fastrand"]
+
 [dependencies]
+fastrand = { version = "2.3", optional = true }
