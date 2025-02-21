@@ -6,7 +6,9 @@ edition = "2024"
 [features]
 fastrand = ["dep:fastrand"]
 reqwest = ["dep:reqwest"]
+axum = ["dep:axum"]
 
 [dependencies]
 fastrand = { version = "2.3", optional = true }
 reqwest = { version = "0.12", optional = true, features = ["blocking"] }
+axum = { version = "0.8", features = ["macros"], optional = true }
