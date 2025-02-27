@@ -15,7 +15,7 @@ impl Error for GenericError {}
 
 pub trait ToGenericError {
     fn to_error(self) -> GenericError;
-    fn wrap_error(self) -> DynResult<()> where Self: Sized {
+    fn wrap_error<T>(self) -> DynResult<T> where Self: Sized {
         Err(Box::new(self.to_error()))
     }
 }
