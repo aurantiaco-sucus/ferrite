@@ -1,7 +1,9 @@
 use std::path::Path;
 use std::process::{Command, ExitStatus, Stdio};
 use std::{fs, io};
+#[cfg(feature = "reqwest")]
 use std::fs::File;
+#[cfg(feature = "reqwest")]
 use std::io::BufWriter;
 
 pub fn download_file(url: &str, output: impl AsRef<Path>) -> Result<(), DownloadError> {
