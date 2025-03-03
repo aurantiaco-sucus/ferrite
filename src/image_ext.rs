@@ -1,3 +1,4 @@
+#[cfg(feature = "image-codecs")]
 use image::codecs::png::PngEncoder;
 use image::{imageops, ImageResult, RgbaImage};
 #[cfg(feature = "image-codecs")]
@@ -17,18 +18,26 @@ pub fn resize_within_area(img: RgbaImage, max_area: u32) -> RgbaImage {
 }
 
 #[cfg(feature = "image-codecs")]
-pub fn adaptive_compress(img: RgbaImage, max_size: usize, allow_png: bool) -> ImageResult<Option<Vec<u8>>> {
+pub fn adaptive_compress(img: &RgbaImage, max_size: usize, allow_png: bool, org_size: Option<usize>) -> ImageResult<Option<Vec<u8>>> {
     let mut buf = vec![];
+    let max_size = {
+        let org_size = org_size.unwrap_or(usize::MAX);
+        if max_size > org_size {
+            org_size
+        } else {
+            max_size
+        }
+    };
     if allow_png {
-        img.write_with_encoder(&mut PngEncoder::new_with_quality(&mut buf, png::CompressionType::Best, png::FilterType::default()))?;
+        img.write_with_encoder(PngEncoder::new_with_quality(&mut buf, png::CompressionType::Best, png::FilterType::default()))?;
         if buf.len() <= max_size {
             return Ok(Some(buf))
         }
     }
-    for level in 0..9 {
+    for level in 0..=9 {
         let quality = 100 - 5 * level;
         buf.clear();
-        img.write_with_encoder(&mut JpegEncoder::new_with_quality(&mut buf, quality))?;
+        img.write_with_encoder(JpegEncoder::new_with_quality(&mut buf, quality))?;
         if buf.len() <= max_size {
             return Ok(Some(buf))
         }

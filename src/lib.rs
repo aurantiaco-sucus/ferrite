@@ -10,6 +10,7 @@ mod download;
 mod unix_kill;
 #[cfg(feature = "axum")]
 mod axum_ext;
+#[cfg(feature = "image")]
 mod image_ext;
 
 pub use arg_sort::*;
