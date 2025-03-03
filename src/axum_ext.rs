@@ -1,3 +1,4 @@
+use std::fmt::Display;
 use axum::http::StatusCode;
 use axum::Json;
 
@@ -15,7 +16,7 @@ pub trait ResponseWrapResult<T>: Sized {
     }
 }
 
-impl<T, U> ResponseWrapResult<T> for Result<T, U> where U: std::error::Error {
+impl<T, U> ResponseWrapResult<T> for Result<T, U> where U: Display {
     fn wrap(self, status: StatusCode) -> SimpleResponse<T> {
         self.map_err(|x| (status, x.to_string()))
     }
