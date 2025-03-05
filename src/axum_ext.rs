@@ -31,6 +31,14 @@ pub trait ResponseWrapOption<T>: Sized {
     fn wrap_client_error(self) -> SimpleResponse<T> {
         self.wrap_error(StatusCode::BAD_REQUEST, "Bad Request")
     }
+    
+    fn wrap_server_error_of(self, message: impl Into<String>) -> SimpleResponse<T> {
+        self.wrap_error(StatusCode::INTERNAL_SERVER_ERROR, message)
+    }
+    
+    fn wrap_client_error_of(self, message: impl Into<String>) -> SimpleResponse<T> {
+        self.wrap_error(StatusCode::BAD_REQUEST, message)
+    }
 }
 
 impl<T> ResponseWrapOption<T> for Option<T> {
@@ -41,3 +49,27 @@ impl<T> ResponseWrapOption<T> for Option<T> {
 
 pub type ObjectResponse<T> = SimpleResponse<Json<T>>;
 pub type BinaryResponse = SimpleResponse<Vec<u8>>;
+
+pub trait SimpleResponseExt: Sized {
+    fn with_message(self, message: impl Into<String>) -> Self;
+    fn with_format(self, func: impl FnOnce(String) -> String) -> Self;
+    fn with_prefix(self, prefix: impl Into<String>) -> Self {
+        self.with_format(|x| format!("{}{x}", prefix.into()))
+    }
+}
+
+impl<T> SimpleResponseExt for SimpleResponse<T> {
+    fn with_message(self, message: impl Into<String>) -> Self {
+        match self {
+            Ok(x) => Ok(x),
+            Err((sc, msg)) => Err((sc, message.into())),
+        }
+    }
+    
+    fn with_format(self, func: impl FnOnce(String) -> String) -> Self {
+        match self {
+            Ok(x) => Ok(x),
+            Err((sc, msg)) => Err((sc, func(msg))),
+        }
+    }
+}
