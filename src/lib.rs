@@ -12,6 +12,7 @@ mod unix_kill;
 mod axum_ext;
 #[cfg(feature = "image")]
 mod image_ext;
+mod wrapper;
 
 pub use arg_sort::*;
 pub use binary_io::*;
@@ -27,3 +28,4 @@ pub use unix_kill::*;
 pub use axum_ext::*;
 #[cfg(feature = "image")]
 pub use image_ext::*;
+pub use wrapper::*;
