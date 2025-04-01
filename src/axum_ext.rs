@@ -62,7 +62,7 @@ impl<T> SimpleResponseExt for SimpleResponse<T> {
     fn with_message(self, message: impl Into<String>) -> Self {
         match self {
             Ok(x) => Ok(x),
-            Err((sc, msg)) => Err((sc, message.into())),
+            Err((sc, _)) => Err((sc, message.into())),
         }
     }
     
