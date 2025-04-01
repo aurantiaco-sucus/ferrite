@@ -1,6 +1,8 @@
 use std::path::Path;
 use std::process::{Command, ExitStatus, Stdio};
 use std::{fs, io};
+use std::error::Error;
+use std::fmt::{Debug, Display, Formatter};
 #[cfg(feature = "reqwest")]
 use std::fs::File;
 #[cfg(feature = "reqwest")]
@@ -38,6 +40,7 @@ pub fn download_file(url: &str, output: impl AsRef<Path>) -> Result<(), Download
     Err(DownloadError::NoMethod)
 }
 
+#[derive(Debug)]
 pub enum DownloadError {
     Io(io::Error),
     Curl(ExitStatus),
@@ -45,3 +48,11 @@ pub enum DownloadError {
     Reqwest(reqwest::Error),
     NoMethod,
 }
+
+impl Display for DownloadError {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{self:?}")
+    }
+}
+
+impl Error for DownloadError {}
