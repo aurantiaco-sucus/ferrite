@@ -1,12 +1,12 @@
 #[cfg(feature = "image-codecs")]
 use image::codecs::png::PngEncoder;
-use image::{imageops, ImageResult, RgbaImage};
+use image::{imageops, ImageResult, RgbImage};
 #[cfg(feature = "image-codecs")]
 use image::codecs::jpeg::JpegEncoder;
 #[cfg(feature = "image-codecs")]
 use image::codecs::png;
 
-pub fn resize_within_area(img: RgbaImage, max_area: u32) -> RgbaImage {
+pub fn resize_within_area(img: RgbImage, max_area: u32) -> RgbImage {
     let cur_area = img.width() * img.height();
     if max_area >= cur_area {
         return img
@@ -18,7 +18,7 @@ pub fn resize_within_area(img: RgbaImage, max_area: u32) -> RgbaImage {
 }
 
 #[cfg(feature = "image-codecs")]
-pub fn adaptive_compress(img: &RgbaImage, max_size: usize, allow_png: bool, org_size: Option<usize>) -> ImageResult<Option<Vec<u8>>> {
+pub fn adaptive_compress(img: &RgbImage, max_size: usize, allow_png: bool, org_size: Option<usize>) -> ImageResult<Option<Vec<u8>>> {
     let mut buf = vec![];
     let max_size = {
         let org_size = org_size.unwrap_or(usize::MAX);
